@@ -16,6 +16,8 @@ public class DBConexion implements AutoCloseable {
     public DBConexion(String user, String password) throws Exception {
         super();
 
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        
         Properties properties = new Properties();
         properties.put("user", user);
         properties.put("password", password);
@@ -39,7 +41,7 @@ public class DBConexion implements AutoCloseable {
 
     public ResultSet getEstudiantes(Connection connection) {
         ResultSet rs = null;
-        String query = "SELECT * FROM estudiantes";
+        String query = "SELECT * FROM universidad.estudiantes";
         Statement stmt = null;
 
         try {
