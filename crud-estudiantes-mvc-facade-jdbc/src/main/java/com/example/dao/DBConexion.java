@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
-import com.example.models.Facultad;
-import java.sql.PreparedStatement;
-import com.example.models.Telefono;
+
 import com.example.models.Correo;
+import com.example.models.Facultad;
+import com.example.models.Telefono;
 
 public class DBConexion implements AutoCloseable {
 
@@ -46,21 +46,6 @@ public class DBConexion implements AutoCloseable {
         this.connection.close();
     }
 
-    public ResultSet getEstudiantes(Connection connection) {
-        ResultSet rs = null;
-        String query = "SELECT * FROM universidad.estudiantes";
-        Statement stmt = null;
-
-        try {
-            stmt = connection.createStatement();
-            rs = stmt.executeQuery(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return rs;
-    }
-    
     public Facultad getFacultadById(Connection connection, int facultadId) {
         Facultad facultad = null;
         String query = "SELECT * FROM facultades WHERE id = ?";
