@@ -149,4 +149,26 @@ public class DBConexion implements AutoCloseable {
 
         return correos;
     }
+    
+    public List<Facultad> getFacultades(Connection connection) {
+        List<Facultad> facultades = new ArrayList<>();
+
+        String query = "SELECT * FROM facultades";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                facultades.add(new Facultad(
+                        rs.getInt("id"),
+                        rs.getString("nombre")
+                ));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return facultades;
+    }
 }

@@ -29,10 +29,26 @@ public class EstudianteServiceImpl implements EstudianteService {
     }
     
     @Override
-    public List<EstudianteCompleto> getEstudiantesCompletos() {
-        List<EstudianteCompleto> estudiantesCompletos = new ArrayList<>();
+    public List<Facultad> getFacultades() {
+        List<Facultad> facultades = new ArrayList<>();
 
         try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+             Connection connection = dbConexion.getConexion()) {
+
+            facultades = dbConexion.getFacultades(connection);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return facultades;
+    }
+     
+    @Override
+    public List<EstudianteCompleto> getEstudiantesCompletos() {
+        List<EstudianteCompleto> estudiantesCompletos = new ArrayList<>();
+        
+       try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
              Connection connection = dbConexion.getConexion()) {
 
             ResultSet rs = dbConexion.getEstudiantesConFacultad(connection);
