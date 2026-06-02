@@ -70,6 +70,13 @@
 </head>
 <body>
     <h1>Listado de Estudiantes</h1>
+    <div>
+    <a href="AltaEstudianteController" title="Muestra el formulario de alta de estudiante">
+        Alta de Estudiante
+    </a>
+</div>
+
+<br>
 
     <table border="1">
         <thead>
