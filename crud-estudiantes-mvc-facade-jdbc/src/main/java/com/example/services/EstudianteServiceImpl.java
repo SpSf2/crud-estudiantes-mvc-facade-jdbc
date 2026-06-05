@@ -85,4 +85,15 @@ public class EstudianteServiceImpl implements EstudianteService {
 
         return estudiantesCompletos;
     }
+    
+    @Override
+    public void insertEstudiante(Estudiante estudiante, List<String> telefonos, List<String> correos) throws Exception {
+        try (DBConexion dbConexion = new DBConexion("root", "Temp2026")) {
+        	dbConexion.insertEstudiante(estudiante, telefonos, correos);
+        }
+    }
+    
+    
+    
+    
 }

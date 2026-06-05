@@ -1,6 +1,7 @@
 package com.example.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +13,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import com.example.models.Correo;
+import com.example.models.Estudiante;
 import com.example.models.Facultad;
 import com.example.models.Telefono;
 
@@ -86,6 +88,7 @@ public class DBConexion implements AutoCloseable {
                        f.nombre AS nombre_facultad
                 FROM estudiantes e
                 INNER JOIN facultades f ON e.facultad_id = f.id
+                ORDER BY e.id DESC
                 """;
 
         Statement stmt = null;
@@ -170,5 +173,60 @@ public class DBConexion implements AutoCloseable {
         }
 
         return facultades;
+    }
+    
+    public void insertEstudiante(Estudiante estudiante, List<String> telefonos, List<String> correos) throws Exception {
+        String sql = "INSERT INTO estudiantes (nombre, primerApellido, segundoApellido, "
+        		+ "genero, fechaNacimiento, beca, facultad_id, totalAsignaturas) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        int estudianteId;
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, estudiante.nombre());
+            ps.setString(2, estudiante.primerApellido());
+            ps.setString(3, estudiante.segundoApellido());
+            ps.setString(4, estudiante.genero().name());
+            ps.setDate(5, Date.valueOf(estudiante.fechaNacimiento()));
+
+            if (estudiante.beca() != null) {
+                ps.setDouble(6, estudiante.beca());
+            } else {
+                ps.setNull(6, java.sql.Types.DOUBLE);
+            }
+
+            ps.setInt(7, estudiante.facultad_id());
+            ps.setInt(8, estudiante.totalAsignaturas());
+
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    estudianteId = rs.getInt(1);
+                } else {
+                    throw new SQLException("No se pudo obtener el id del estudiante insertado");
+                }
+            }
+
+            String sqlTelefonos = "INSERT INTO telefonos (numero, estudiante_id) VALUES (?, ?)";
+
+            try (PreparedStatement psTelefono = connection.prepareStatement(sqlTelefonos)) {
+                for (String telefono : telefonos) {
+                    psTelefono.setString(1, telefono);
+                    psTelefono.setInt(2, estudianteId);
+                    psTelefono.executeUpdate();
+                }
+            }
+            
+            String sqlCorreos = "INSERT INTO correos (email, estudiante_id) VALUES (?, ?)";
+
+            try (PreparedStatement psCorreo = connection.prepareStatement(sqlCorreos)) {
+                for (String correo : correos) {
+                    psCorreo.setString(1, correo);
+                    psCorreo.setInt(2, estudianteId);
+                    psCorreo.executeUpdate();
+                }
+            }
+        }
+    
     }
 }
