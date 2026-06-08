@@ -15,85 +15,126 @@ import com.example.models.Telefono;
 
 public class EstudianteServiceImpl implements EstudianteService {
 
-    @Override
-    public boolean isConnectionOK() throws Exception {
-        boolean connectionOK = false;
+	@Override
+	public boolean isConnectionOK() throws Exception {
+		boolean connectionOK = false;
 
-        try (DBConexion dbConexion = new DBConexion("root", "Temp2026")) {
-            if (dbConexion.getConexion() != null) {
-                connectionOK = true;
-            }
-        }
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026")) {
+			if (dbConexion.getConexion() != null) {
+				connectionOK = true;
+			}
+		}
 
-        return connectionOK;
-    }
-    
-    @Override
-    public List<Facultad> getFacultades() {
-        List<Facultad> facultades = new ArrayList<>();
+		return connectionOK;
+	}
 
-        try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
-             Connection connection = dbConexion.getConexion()) {
+	@Override
+	public List<Facultad> getFacultades() {
+		List<Facultad> facultades = new ArrayList<>();
 
-            facultades = dbConexion.getFacultades(connection);
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConexion()) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			facultades = dbConexion.getFacultades(connection);
 
-        return facultades;
-    }
-     
-    @Override
-    public List<EstudianteCompleto> getEstudiantesCompletos() {
-        List<EstudianteCompleto> estudiantesCompletos = new ArrayList<>();
-        
-       try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
-             Connection connection = dbConexion.getConexion()) {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-            ResultSet rs = dbConexion.getEstudiantesConFacultad(connection);
+		return facultades;
+	}
 
-            while (rs.next()) {
-                Estudiante estudiante = new Estudiante(
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("primerApellido"),
-                        rs.getString("segundoApellido"),
-                        Genero.valueOf(rs.getString("genero")),
-                        rs.getDate("fechaNacimiento").toLocalDate(),
-                        rs.getDouble("beca"),
-                        rs.getInt("facultad_id"),
-                        rs.getInt("totalAsignaturas")
-                );
+	@Override
+	public List<EstudianteCompleto> getEstudiantesCompletos() {
+		List<EstudianteCompleto> estudiantesCompletos = new ArrayList<>();
 
-                Facultad facultad = new Facultad(
-                        rs.getInt("facultad_id"),
-                        rs.getString("nombre_facultad")
-                );
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConexion()) {
 
-                List<Telefono> telefonos = dbConexion.getTelefonosByEstudianteId(connection, estudiante.id());
-                List<Correo> correos = dbConexion.getCorreosByEstudianteId(connection, estudiante.id());
+			ResultSet rs = dbConexion.getEstudiantesConFacultad(connection);
 
-                estudiantesCompletos.add(
-                        new EstudianteCompleto(estudiante, facultad, telefonos, correos)
-                );
-            }
+			while (rs.next()) {
+				Estudiante estudiante = new Estudiante(
+						rs.getInt("id"), 
+						rs.getString("nombre"),
+						rs.getString("primerApellido"), 
+						rs.getString("segundoApellido"),
+						Genero.valueOf(rs.getString("genero")),
+						rs.getDate("fechaNacimiento").toLocalDate(),
+						rs.getDouble("beca"),
+						rs.getInt("facultad_id"),
+						rs.getInt("totalAsignaturas"));
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+				Facultad facultad = new Facultad
+						(rs.getInt("facultad_id"),
+								rs.getString("nombre_facultad"));
 
-        return estudiantesCompletos;
-    }
-    
-    @Override
-    public void insertEstudiante(Estudiante estudiante, List<String> telefonos, List<String> correos) throws Exception {
-        try (DBConexion dbConexion = new DBConexion("root", "Temp2026")) {
-        	dbConexion.insertEstudiante(estudiante, telefonos, correos);
-        }
-    }
-    
-    
-    
-    
+				List<Telefono> telefonos = dbConexion.getTelefonosByEstudianteId(
+						connection, estudiante.id());
+				List<Correo> correos = dbConexion.getCorreosByEstudianteId(
+						connection, estudiante.id());
+
+				estudiantesCompletos.add(new EstudianteCompleto(
+						estudiante, 
+						facultad, 
+						telefonos, 
+						correos));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return estudiantesCompletos;
+	}
+
+	@Override
+	public void insertEstudiante(Estudiante estudiante, 
+			List<String> telefonos, 
+			List<String> correos) throws Exception {
+		
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026")) {
+			dbConexion.insertEstudiante(estudiante, telefonos, correos);
+		}
+	}
+
+	@Override
+	public EstudianteCompleto getEstudianteCompletoById(int id) {
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConexion()) {
+
+			return dbConexion.getEstudianteCompletoById(connection, id);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
+
+	@Override
+	public void updateEstudiante(Estudiante estudiante, 
+			List<String> telefonos, 
+			List<String> correos) throws Exception {
+		
+	    try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+	         Connection connection = dbConexion.getConexion()) {
+
+	        dbConexion.updateEstudiante(connection, estudiante, telefonos, correos);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw e;
+	    }
+	}
+		
 }
+
+	
+	
+
+
+
+
+

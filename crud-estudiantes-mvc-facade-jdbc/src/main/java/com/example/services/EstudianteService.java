@@ -9,11 +9,16 @@ import com.example.models.Facultad;
 
 public interface EstudianteService {
 
-    boolean isConnectionOK() throws SQLException, Exception;
-    
-    List<EstudianteCompleto> getEstudiantesCompletos();
-    
-    List<Facultad> getFacultades();
-    
-    void insertEstudiante(Estudiante estudiante, List<String> telefonos, List<String> correos) throws Exception;
+	boolean isConnectionOK() throws SQLException, Exception;
+
+	List<EstudianteCompleto> getEstudiantesCompletos();
+
+	List<Facultad> getFacultades();
+
+	void insertEstudiante(Estudiante estudiante, List<String> telefonos, List<String> correos) throws Exception;
+
+	EstudianteCompleto getEstudianteCompletoById(int id);
+	
+	void updateEstudiante(Estudiante estudiante, List<String> telefonos, List<String> correos) throws Exception;
+
 }

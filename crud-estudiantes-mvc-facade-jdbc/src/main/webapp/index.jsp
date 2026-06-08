@@ -1,10 +1,8 @@
 <%@page import="java.util.List"%>
 <%@page import="com.example.models.EstudianteCompleto"%>
-<%@page import="com.example.models.Telefono"%>
-<%@page import="com.example.models.Correo"%>
 <%@page import="com.example.services.EstudianteService"%>
 <%@page import="com.example.services.EstudianteServiceImpl"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
 <%
@@ -81,37 +79,35 @@
     <table border="1">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Primer Apellido</th>
-                <th>Segundo Apellido</th>
-                <th>Facultad</th>
-                <th>Telefonos</th>
-                <th>Correos</th>
-            </tr>
+			    <th>Nombre</th>
+			    <th>Primer Apellido</th>
+			    <th>Segundo Apellido</th>
+			    <th>Fecha de Nacimiento</th>
+			    <th>Género</th>
+			    <th>Facultad</th>
+			    <th>Acciones</th>
+			</tr>
         </thead>
         <tbody>
             <% for (EstudianteCompleto item: estudiantes) { %>
-                <tr>
-                    <td><%= item.estudiante().nombre() %></td>
-                    <td><%= item.estudiante().primerApellido() %></td>
-                    <td><%= item.estudiante().segundoApellido() %></td>
-                    <td><%= item.facultad().nombre() %></td>
-                    <td>
-					    <ul class="lista-datos">
-					        <% for (Telefono telefono : item.telefonos()) { %>
-					            <li><%= telefono.numero() %></li>
-					        <% } %>
-					    </ul>
-					</td>
-                    <td>
-					    <ul class="lista-datos">
-					        <% for (Correo correo : item.correos()) { %>
-					            <li><%= correo.email() %></li>
-					        <% } %>
-					    </ul>
-					</td>
-                </tr>
-            <% } %>
+			    <tr>
+			        <td><%= item.estudiante().nombre() %></td>
+			        <td><%= item.estudiante().primerApellido() %></td>
+			        <td><%= item.estudiante().segundoApellido() %></td>
+			        <td><%= item.estudiante().fechaNacimiento() %></td>
+			        <td><%= item.estudiante().genero() %></td>
+			        <td><%= item.facultad().nombre() %></td>
+			        <td>
+			            <a href="DetalleEstudianteController?id=<%= item.estudiante().id() %>">
+			                Detalles
+			            </a>
+			            |
+			            <a href="ModificarEstudianteController?id=<%= item.estudiante().id() %>">
+			                Modificación
+			            </a>
+			        </td>
+			    </tr>
+			<% } %>
         </tbody>
     </table>
 </body>
